@@ -1,0 +1,21 @@
+1. Initialize registers:
+   - AX = 0000h, BX = 0000h, CX = 0000h
+   - AL = 25h (the number to find the square root of)
+   - CL = 00h (initialize counter)
+   - BL = 01h (starting value for step size)
+
+2. Start calculating the square root:
+   a. Compare AL with 00h:
+      - If AL = 00h, proceed to the 'zero' section (exit loop).
+   b. Subtract BL from AL (AL = AL - BL).
+   c. Perform the ASCII adjust operation (AAS) on AL.
+   d. Increment BL by 2 (BL = BL + 2).
+   e. Increment counter CL by 1.
+   f. Repeat until AL becomes 00h.
+
+3. Once AL becomes 00h:
+   a. Add 30h to CL (convert the counter to ASCII value).
+   b. Move the result (ASCII value) to DL.
+   c. Use interrupt `21h` with function `2` to display the result.
+
+4. Exit the program.

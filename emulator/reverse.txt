@@ -1,0 +1,19 @@
+1. Initialize data segment to access the string
+2. Call REVERSE function:
+   a. Set SI to the start of the string
+   b. Set CX (counter) to 0
+   c. Loop through the string:
+      i. Push each character onto the stack
+      ii. Increment the pointer SI
+      iii. Increment CX
+   d. When '$' is encountered, exit loop
+3. Set SI back to the start of the string
+4. Loop through the string to pop characters from the stack:
+   a. Pop character from the stack into DX
+   b. Clear the upper byte of DX (XOR DH, DH)
+   c. Store the character back at the current position in the string
+   d. Increment SI and decrement CX
+5. Once the string is reversed, append '$' to terminate the string
+6. Return control to the main program
+7. Print the reversed string
+8. Exit the program
