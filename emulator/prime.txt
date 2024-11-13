@@ -1,0 +1,18 @@
+Start
+Initialize data segment.
+Load the number to be checked into AL.
+If the number is less than 2, jump to not_prime.
+Set divisor BL to 2.
+Check Divisibility Loop:
+Set the quotient in AL and remainder in AH by dividing the number (AL) by BL.
+If remainder (AH) is 0, the number is divisible by BL, so jump to not_prime.
+Calculate BL * BL and store the result in BX.
+If BL * BL is greater than the number, jump to prime.
+Increment BL and repeat the divisibility check.
+Not Prime:
+Print "The number is not prime."
+End the program.
+Prime:
+Print "The number is prime."
+End the program
+End
