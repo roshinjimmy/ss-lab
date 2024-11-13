@@ -1,0 +1,17 @@
+begin
+    get PROGADDR from operating system
+    while not end of input do
+        begin
+            read next record
+            while record type != 'E' do 
+                begin
+                    read next input record
+                    while record type = 'T' then
+                        begin   
+                            move object code from record to location ADDR + specified address
+                        end
+                    while record type = 'M'
+                        add PROGADDR at the location PROGADDR specfied address
+                end
+        end
+end
