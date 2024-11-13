@@ -1,0 +1,17 @@
+Set the data segment to point to data.
+Load the size of the array (size) into register CL.
+Load the address of the array (arr) into register SI.
+Set register BL (odd number count) to 0.
+Compare the value of CL (remaining elements) with 0. If CL is 0, jump to the print step.
+Load the current element of the array into register AL.
+Check if the least significant bit (LSB) of AL is 1 (i.e., check if the number is odd) using the test instruction:
+If the number is odd, increment the BL register (odd count).
+Move to the next element in the array by incrementing SI.
+Decrement CL to track the remaining number of elements.
+Repeat the loop until all elements are checked.
+Load the address of the message msg1 into DX and display the message using DOS interrupt 21h.
+Move the odd count from BL to AL.
+Convert the count into its ASCII representation by adding '0' to AL.
+Store the result in the buffer.
+Load the address of the buffer containing the odd count and display it using DOS interrupt 21h.
+Terminate the program using DOS interrupt 21h with function 4Ch.

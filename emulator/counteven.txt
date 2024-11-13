@@ -1,0 +1,30 @@
+Initialize Data Segment:
+
+Load the data segment to the DS register.
+Define an array arr[] containing the numbers to be processed (in this case, 10, 11, 12, 13, 15, 16, 9).
+Set the size of the array (size) to 7 (the actual number of elements in arr[]).
+Initialize Registers:
+
+Set SI to point to the address of the array arr[].
+Set CL to the value of size (the number of elements in the array).
+Set BL to 0, which will be used to store the count of even numbers.
+Iterate Over the Array:
+
+Loop through each element in the array, comparing the value to determine if it is even or odd.
+For each element:
+Load the current element from arr[] into register AL.
+Test the least significant bit (LSB) of AL using the test instruction. If the LSB is 0, the number is even.
+If the number is even (i.e., AL & 1 == 0), increment BL (to count the even numbers).
+Check Loop Condition:
+
+After processing each element:
+Decrement the size counter CL.
+If CL becomes 0, exit the loop as all elements have been processed.
+Print the Result:
+
+After the loop ends, print the message "Number of even numbers is:" using the DOS interrupt int 21h with function 09h.
+Convert the value in BL (the count of even numbers) to its ASCII equivalent by adding '0' to it.
+Store the ASCII value in the buffer and print it using int 21h.
+Terminate the Program:
+
+Use the int 21h with function 4Ch to exit the program.
