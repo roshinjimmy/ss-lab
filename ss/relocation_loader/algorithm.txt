@@ -15,3 +15,54 @@ begin
                 end
         end
 end
+
+
+Initialize:
+
+Define a global array bit[50] to store the bit mask.
+Define the convert function to convert a hex string to its binary equivalent and store it in the bit array.
+Define convert function:
+
+Take a hexadecimal string hex as input.
+Clear the bit array by copying an empty string to it.
+For each character in hex:
+Use a switch statement to match each hex character (0-F).
+Append the 4-bit binary representation of each hex character to bit.
+Main function:
+
+Declare file pointers input and output for reading and writing files, respectively.
+Declare required variables: line, bitmask, token, pgname, start_addr, length, tlen, PROGADDR, and start.
+Open files:
+
+Open input.txt for reading and output.txt for writing.
+If either file fails to open, display an error and terminate the program.
+Get the Starting Address:
+
+Prompt the user to enter the actual starting address in hexadecimal format and store it in PROGADDR.
+Read the Header Record:
+
+Read the first line of the input file into line.
+If the first character in line is H:
+Extract the program name (pgname), starting address (start_addr), and program length (length) by splitting line using the ^ delimiter.
+Process Text Records:
+
+Loop through each line in the input file until reaching a line starting with E.
+For each line:
+Split the line into tokens based on the ^ delimiter.
+If the first token is T (Text record):
+Retrieve the starting address of the text record and add PROGADDR to it, storing the result in start.
+Retrieve the text length (tlen) and bit mask (bitmask).
+Convert the hexadecimal bit mask to binary using convert(bitmask).
+For each bit in the bit array:
+Retrieve the next object code (token).
+If there is no token left, break the loop.
+Convert the object code from hex to integer, storing it in addr.
+If the current bit is 1, add PROGADDR to addr.
+Write start and the modified addr to the output file in hexadecimal format.
+Increment start by 3 (the length of each object code entry).
+Close Files:
+
+Close both input and output files.
+End Program:
+
+Exit the program.
