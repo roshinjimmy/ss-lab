@@ -1,19 +1,78 @@
-1. Initialize data segment to access the string
-2. Call REVERSE function:
-   a. Set SI to the start of the string
-   b. Set CX (counter) to 0
-   c. Loop through the string:
-      i. Push each character onto the stack
-      ii. Increment the pointer SI
-      iii. Increment CX
-   d. When '$' is encountered, exit loop
-3. Set SI back to the start of the string
-4. Loop through the string to pop characters from the stack:
-   a. Pop character from the stack into DX
-   b. Clear the upper byte of DX (XOR DH, DH)
-   c. Store the character back at the current position in the string
-   d. Increment SI and decrement CX
-5. Once the string is reversed, append '$' to terminate the string
-6. Return control to the main program
-7. Print the reversed string
-8. Exit the program
+DATA SEGMENT
+    MSG1 DB 10,13,'ENTER THE STRING: $'
+    MSG2 DB 10,13,'NUMBER OF VOWELS IS: $'
+    STR1 DB 50 DUP(0) ; Buffer for input string
+    VOWELS DB "aeiouAEIOU" ; Vowel characters to check against
+    VOWEL_COUNT DB 0 ; Variable to store the count of vowels
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE, DS:DATA
+
+START:
+    MOV AX, DATA
+    MOV DS, AX
+
+    ; Display the prompt message for input
+    LEA DX, MSG1
+    MOV AH, 09H
+    INT 21H
+
+    ; Read the input string
+    LEA DX, STR1
+    MOV AH, 0AH ; Read string function
+    INT 21H
+
+    ; Initialize SI to the input string buffer, skipping the first byte (length)
+    LEA SI, STR1+1
+    MOV CX, STR1 ; Load the length of the input string
+    MOV DI, 0 ; Vowel count starts at 0
+
+NEXT_CHAR:
+    MOV AL, [SI] ; Load a character from the string
+    CMP AL, 0DH  ; Check for end of line (carriage return)
+    JE END_COUNT ; If end of line, finish counting
+
+    ; Check if character is a vowel
+    MOV BX, OFFSET VOWELS ; Load the vowels list into BX
+    MOV DX, 10 ; Number of vowels to check
+
+CHECK_VOWEL:
+    MOV BL, [BX] ; Load vowel from the list
+    CMP AL, BL ; Compare current character with vowel
+    JE IS_VOWEL ; If match, it's a vowel
+    INC BX ; Move to next vowel
+    DEC DX ; Decrement vowel counter
+    JNZ CHECK_VOWEL ; Continue checking if not zero
+
+    JMP NOT_VOWEL ; If no match found, go to NOT_VOWEL
+
+IS_VOWEL:
+    INC DI ; Increment vowel count
+
+NOT_VOWEL:
+    INC SI ; Move to next character in string
+    LOOP NEXT_CHAR ; Repeat until CX (length of string) is zero
+
+END_COUNT:
+    ; Convert count to ASCII and display result
+    MOV AL, DI
+    ADD AL, '0'
+    MOV VOWEL_COUNT, AL
+
+    ; Display the result message
+    LEA DX, MSG2
+    MOV AH, 09H
+    INT 21H
+
+    ; Display the vowel count
+    MOV AH, 02H
+    MOV DL, VOWEL_COUNT
+    INT 21H
+
+    ; Exit the program
+    MOV AH, 4CH
+    INT 21H
+
+CODE ENDS
+END START
