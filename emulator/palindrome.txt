@@ -1,14 +1,55 @@
-1. Initialize the data segment to store messages and string buffer.
-2. Display the message "Enter a string:" (MSG1) using interrupt 21H.
-3. Read the user input string:
-   a. Initialize pointers `SI` and `DI` to point to the string buffer (STR1).
-   b. Read each character until the user presses Enter (carriage return).
-   c. Store each character in STR1.
-4. Terminate the string by adding "$" at the end.
-5. Start checking for palindrome:
-   a. Set `DI` to the last character before "$".
-   b. Compare characters from the beginning (`SI`) and end (`DI`).
-   c. If characters match, increment `SI` and decrement `DI`.
-   d. If characters don't match, print "It is not a palindrome." (MSG3).
-6. If all characters match, print "It is a palindrome." (MSG2).
-7. Exit the program using interrupt 21H with function `4CH`.
+ORG 100h                  ; Origin for COM file (EMU8086 style)
+
+DATA SEGMENT
+    string DB 'Hello World, Assembly Language!', '$'  ; String to process
+    vowels DB 'AEIOUaeiou'                            ; Vowels to compare
+    lenVowels EQU 10                                  ; Length of vowel list
+    vowelCount DB 0                                   ; Store the vowel count
+DATA ENDS
+
+CODE SEGMENT
+START:
+    MOV AX, DATA
+    MOV DS, AX
+    MOV ES, AX
+
+    LEA SI, string        ; Load address of the string into SI
+    MOV CX, 0             ; Clear CX for vowel count
+
+NEXT_CHAR:
+    MOV AL, [SI]          ; Load character from string
+    INC SI                ; Move to next character in string
+    CMP AL, '$'           ; Check for end of string (custom terminator)
+    JE DISPLAY_COUNT      ; If end of string, display the result
+
+    ; Check if character is a vowel
+    LEA DI, vowels        ; Load address of vowel list into DI
+    MOV BX, lenVowels     ; Set loop counter to number of vowels
+
+CHECK_VOWEL:
+    CMP AL, [DI]          ; Compare character with current vowel
+    JE INCREMENT_COUNT    ; If match, increment count
+    INC DI                ; Move to next vowel in list
+    DEC BX                ; Decrement vowel counter
+    JNZ CHECK_VOWEL       ; Repeat for each vowel if BX != 0
+
+    JMP NEXT_CHAR         ; Move to the next character in the string
+
+INCREMENT_COUNT:
+    INC CX                ; Increment vowel count
+    JMP NEXT_CHAR         ; Continue to the next character
+
+DISPLAY_COUNT:
+    MOV vowelCount, CL    ; Store vowel count in memory for display
+
+    ; Display the vowel count (CX contains the count)
+    MOV AH, 2             ; DOS service to print a character
+    MOV DL, '0'           ; Start with character '0'
+    ADD DL, vowelCount    ; Add count to '0' to get ASCII character
+    INT 21h               ; Print the count as a single digit (0-9)
+    
+    MOV AX, 4C00h         ; DOS interrupt to exit program
+    INT 21h
+
+CODE ENDS
+END START
