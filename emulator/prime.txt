@@ -1,18 +1,43 @@
-Start
-Initialize data segment.
-Load the number to be checked into AL.
-If the number is less than 2, jump to not_prime.
-Set divisor BL to 2.
-Check Divisibility Loop:
-Set the quotient in AL and remainder in AH by dividing the number (AL) by BL.
-If remainder (AH) is 0, the number is divisible by BL, so jump to not_prime.
-Calculate BL * BL and store the result in BX.
-If BL * BL is greater than the number, jump to prime.
-Increment BL and repeat the divisibility check.
-Not Prime:
-Print "The number is not prime."
-End the program.
-Prime:
-Print "The number is prime."
-End the program
-End
+section .data
+    string db 'Hello World, Assembly Language!', 0  ; String to process (null-terminated)
+    vowels db 'AEIOUaeiou'                         ; Vowels list to check against
+    lenVowels equ $ - vowels                       ; Number of vowels in the list
+    vowelCount dw 0                                ; Variable to store the vowel count
+
+section .code
+global _start
+_start:
+    mov si, string         ; Load address of the string into SI
+    xor cx, cx             ; Clear CX for vowel count
+
+next_char:
+    lodsb                  ; Load byte at DS:SI into AL and increment SI
+    cmp al, 0              ; Check if end of string (null terminator)
+    je done                ; If end, jump to done
+
+    ; Check if the character is a vowel
+    mov di, vowels         ; Load vowels list address into DI
+    mov bx, lenVowels      ; Set loop counter to the number of vowels
+
+check_vowel:
+    cmp al, [di]           ; Compare current character with vowel in DI
+    je increment_count     ; If match, jump to increment count
+    inc di                 ; Move to the next character in the vowels list
+    dec bx                 ; Decrement the vowel counter
+    jnz check_vowel        ; Repeat for each vowel in the list if BX != 0
+
+    jmp next_char          ; Move to the next character in the string
+
+increment_count:
+    inc cx                 ; Increment vowel count in CX
+    jmp next_char          ; Continue to the next character
+
+done:
+    mov [vowelCount], cx   ; Store the vowel count in memory
+
+    ; Exit program (for Linux; adjust for different systems if needed)
+    mov eax, 1             ; Syscall number for exit
+    xor ebx, ebx           ; Exit code 0
+    int 0x80               ; Call kernel
+
+section .bss
